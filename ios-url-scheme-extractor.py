@@ -10,14 +10,14 @@ import Tkinter,tkFileDialog
 def extract_url_scheme(bytes):
     plist = readPlistFromString(bytes)
     schemes = []
-
+    print plist
     if 'URL Types' in plist:
         for data in plist['URL Types']:
-            for scheme in data['URL Schemes']:
+            for scheme in data.get('URL Schemes'):
                 schemes.append(scheme)
-    elif 'CFBundleURLTypes' in plist:
+    if 'CFBundleURLTypes' in plist:
         for data in plist['CFBundleURLTypes']:
-            for scheme in data['CFBundleURLSchemes']:
+            for scheme in data.get('CFBundleURLSchemes'):
                 schemes.append(scheme)
     return schemes
 
@@ -26,8 +26,10 @@ def get_url_scheme(filename):
         for filename in zf.namelist():
             if filename.endswith('Info.plist'):
                 bytes = zf.read(filename)
-                print bytes
-                return extract_url_scheme(bytes)
+                #print bytes
+                schemes=extract_url_scheme(bytes)
+                print schemes
+                return schemes
         return ''
 
 class simpleapp_tk(Tkinter.Tk):
